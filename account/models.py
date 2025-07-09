@@ -3,27 +3,27 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone, password=None):
+    def create_user(self, username, password=None):
         """
-        Creates and saves a User with the given phone and password.
+        Creates and saves a User with the given username and password.
         """
-        if not phone:
-            raise ValueError("Users must have an phone address")
+        if not username:
+            raise ValueError("Users must have an username address")
 
         user = self.model(
-            phone=self.normalize_email(phone),
+            username=self.normalize_email(username),
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone, password=None):
+    def create_superuser(self, username, password=None):
         """
-        Creates and saves a superuser with the given phone and password.
+        Creates and saves a superuser with the given username and password.
         """
         user = self.create_user(
-            phone,
+            username,
             password=password,
         )
 
@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    phone = models.CharField(
+    username = models.CharField(
         verbose_name="شماره تلفن",
         max_length=255,
         unique=True,
@@ -45,10 +45,10 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = "phone"
+    USERNAME_FIELD = "username"
 
     def __str__(self):
-        return self.phone
+        return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
