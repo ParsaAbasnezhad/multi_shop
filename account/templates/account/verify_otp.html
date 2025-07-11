@@ -27,11 +27,7 @@
                 <form name="sentMessage" id="contactForm" novalidate="novalidate" method="post">
                     {% csrf_token %}
                     <div class="control-group">
-                        {{ form.phone }}
-                        <p class="help-block text-danger"></p>
-                    </div>
-                    <div class="control-group">
-                        {{ form.password }}
+                        {{ form.as_p }}
                         <p class="help-block text-danger"></p>
                     </div>
                     <div>

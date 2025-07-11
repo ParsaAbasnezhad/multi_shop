@@ -1,74 +1,61 @@
-from django.contrib.auth import authenticate, login
+import random
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import LoginUserForm, ChackOtpForm, OtpLoginForm
-from django.views.generic import View
-from random import randint
-from uuid import uuid4
-from .models import Otp, User
-from django.urls import reverse
+from django.contrib.auth import login
+from .forms import SendOTPForm, VerifyOTPForm, SetPasswordForm
+from .models import User, OTPCode
+from django.contrib.auth.hashers import make_password
 
 
-class LoginView(View):
-    def get(self, request):
-        form = LoginUserForm()
-        return render(request, "account/login.html", context={'form': form})
-
-    def post(self, request):
-        form = LoginUserForm(request.POST)
+def send_otp(request):
+    if request.method == 'POST':
+        form = SendOTPForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            user = authenticate(username=data.get('phone'), password=data.get('password'))
-            if user is not None:
+            email_or_phone = form.cleaned_data['email_or_phone']
+            code = str(random.randint(100000, 999999))
+            OTPCode.objects.create(email_or_phone=email_or_phone, code=code)
+            print(f"{email_or_phone} OTP code: {code}")
+            return redirect('verify_otp')
+        else:
+            return render(request, 'account/send_otp.html', {'form': form})
+    else:
+        form = SendOTPForm()
+        return render(request, 'account/send_otp.html', {'form': form})
+
+def verify_otp(request):
+    if request.method == 'POST':
+        form = VerifyOTPForm(request.POST)
+        if form.is_valid():
+            email_or_phone = form.cleaned_data['email_or_phone']
+            code = form.cleaned_data['code']
+            otp = OTPCode.objects.filter(email_or_phone=email_or_phone, code=code).last()
+            if otp and otp.is_valid():
+                user, created = User.objects.get_or_create(email_or_phone=email_or_phone)
                 login(request, user)
-                return redirect('/')
+                if created or not user.has_usable_password():
+                    return redirect('set_password')
+                return redirect('home')
             else:
-                form.add_error('phone', 'شماره تلفن یا رمز عبور اشتباه است.')
-        else:
-            form.add_error('phone', 'شماره تلفن یا رمز عبور اشتباه است.')
+                form.add_error('code', 'کد OTP معتبر نیست.')
+        return render(request, 'account/verify_otp.html', {'form': form})
+    else:
+        form = VerifyOTPForm()
+        return render(request, 'account/verify_otp.html', {'form': form})
 
-        return render(request, 'account/login.html', {'form': form})
 
 
-class RegisterView(View):
-    def get(self, request):
-        form = OtpLoginForm()
-        return render(request, "account/register.html", {'form': form})
+def set_password(request):
+    if not request.user.is_authenticated:
+        return redirect('send_otp')
 
-    def post(self, request):
-        form = OtpLoginForm(request.POST)
+    if request.method == 'POST':
+        form = SetPasswordForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            randcode = randint(10000, 99999)
-            token = str(uuid4())
-            Otp.objects.create(phone=data['phone'], code=randcode, token=token)
-            print(randcode)
-            return redirect(reverse('account:check_otp') + f'?token={token}')
+            request.user.password = make_password(form.cleaned_data['password'])
+            request.user.save()
+            return redirect('home')
         else:
-            form.add_error('phone', 'شماره تلفن وارد شده صحیح نیست.')
-
-        return render(request, 'account/register.html', {'form': form})
-
-
-class CheckOtpView(View):
-    def get(self, request):
-        form = ChackOtpForm()
-        return render(request, "account/check_otp.html", context={'form': form})
-
-    def post(self, request):
-        token = request.GET.get('token')
-        form = ChackOtpForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-
-            if Otp.objects.filter(code=data['code'], token=token).exists():
-                otp = Otp.objects.get(token=token)
-                user, is_created = User.objects.get_or_create(phone=otp.phone)
-                login(request, user, backend='account.authentication.EmailAuthBackend')
-                otp.delete()
-                return redirect('/')
-            else:
-                form.add_error('code', 'کد وارد شده اشتباه است.')
-        else:
-            form.add_error('code', 'کد وارد شده صحیح نیست.')
-
-        return render(request, 'account/check_otp.html', {'form': form})
+            return render(request, 'account/set_password.html', {'form': form})
+    else:
+        form = SetPasswordForm()
+        return render(request, 'account/set_password.html', {'form': form})

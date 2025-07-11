@@ -8,19 +8,15 @@ from django.core.exceptions import ValidationError
 from account.models import User
 
 
-
-
 class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
-
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Password confirmation", widget=forms.PasswordInput)
-
+    password2 = forms.CharField(
+        label="Password confirmation", widget=forms.PasswordInput
+    )
 
     class Meta:
         model = User
-        fields = ["username"]
+        fields = ["email_or_phone"]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -40,16 +36,11 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    disabled password hash display field.
-    """
-
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = ["username", "password", "is_active", "is_admin"]
+        fields = ["email_or_phone", "password", "is_active", "is_staff"]
 
 
 class UserAdmin(BaseUserAdmin):
@@ -60,11 +51,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["username" , "is_admin"]
-    list_filter = ["is_admin"]
+    list_display = ["email_or_phone", "is_active"]
+    list_filter = ["is_active"]
     fieldsets = [
-        (None, {"fields": ["username", "password"]}),
-        ("Personal info", {"fields": ['full_name']}),
+        (None, {"fields": ["email", "password"]}),
+        ("Personal info", {"fields": ["is_active"]}),
         ("Permissions", {"fields": ["is_admin"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -74,12 +65,12 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ["wide"],
-                "fields": ["username", "full_name", "password1", "password2"],
+                "fields": ["email_or_phone", "password1", "password2"],
             },
         ),
     ]
-    search_fields = ["username"]
-    ordering = ["username"]
+    search_fields = ["email_or_phone"]
+    ordering = ["email_or_phone"]
     filter_horizontal = []
 
 
