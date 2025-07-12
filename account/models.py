@@ -6,7 +6,7 @@ from django.utils import timezone
 class UserManager(BaseUserManager):
     def create_user(self, email_or_phone, password=None, **extra_fields):
         if not email_or_phone:
-            raise ValueError("Users must have an email or phone number")
+            raise ValueError("Users must have an email_or_phone or phone number")
         email_or_phone = self.normalize_email(email_or_phone) if '@' in email_or_phone else email_or_phone
         user = self.model(
             email_or_phone=email_or_phone, **extra_fields

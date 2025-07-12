@@ -54,7 +54,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ["email_or_phone", "is_active"]
     list_filter = ["is_active"]
     fieldsets = [
-        (None, {"fields": ["email", "password"]}),
+        (None, {"fields": ["email_or_phone", "password"]}),
         ("Personal info", {"fields": ["is_active"]}),
         ("Permissions", {"fields": ["is_admin"]}),
     ]
