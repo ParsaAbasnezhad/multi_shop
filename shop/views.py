@@ -1,12 +1,10 @@
 from django.views.generic import DetailView
 from django.shortcuts import render
-from .models import ShopDetail
+from shop.models import Detail
 
 
-class Detail(DetailView):
-    model = ShopDetail
+class DetailList(DetailView):
     template_name = 'shop/detail.html'
-
-
+    model = Detail
 
 
