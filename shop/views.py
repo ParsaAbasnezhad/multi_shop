@@ -1,13 +1,12 @@
-from django.views.generic import TemplateView ,ListView
+from django.views.generic import DetailView
 from django.shortcuts import render
-from .models import ShopList
+from .models import ShopDetail
 
 
-class ShopListView(ListView):
-    model = ShopList
-    template_name = 'shop/shop.html'
-    context_object_name = 'shop_list'
-    paginate_by = 2
+class Detail(DetailView):
+    model = ShopDetail
+    template_name = 'shop/detail.html'
+
 
 
 
