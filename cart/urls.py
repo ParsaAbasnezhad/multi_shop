@@ -4,5 +4,5 @@ from .import views
 app_name = 'cart'
 urlpatterns = [
     path('detail', views.CartDetailView.as_view(), name='cart_detail'),
-    path('add', views.CartListView.as_view(), name='cart_list'),
+    path('add/<int:pk>', views.CartAddView.as_view(), name='cart_list'),
 ]
