@@ -2,8 +2,10 @@ import random
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import SendOTPForm, VerifyOTPForm, SetPasswordForm
-from .models import User, OTPCode
+from django.views import View
+
+from .forms import SendOTPForm, VerifyOTPForm, SetPasswordForm, AddressForm
+from .models import User, OTPCode, Address
 from django.contrib.auth.hashers import make_password
 
 
@@ -59,3 +61,13 @@ def set_password(request):
     else:
         form = SetPasswordForm()
         return render(request, 'account/set_password.html', {'form': form})
+
+
+
+class AdressView(View):
+    def post(self, request):
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+        return render(request, 'account/add_address.html',{'form': form})

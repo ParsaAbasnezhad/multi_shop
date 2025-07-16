@@ -1,7 +1,8 @@
 from wsgiref.validate import validator
 from django import forms
-from django.core.validators import MaxLengthValidator
+from django.core.validators import MaxLengthValidator, MaxValueValidator
 
+from account.models import Address
 
 
 class SendOTPForm(forms.Form):
@@ -14,3 +15,10 @@ class VerifyOTPForm(forms.Form):
 
 class SetPasswordForm(forms.Form):
       password = forms.CharField(widget=forms.PasswordInput())
+
+
+class AddressForm(forms.ModelForm):
+    user = forms.IntegerField(required=False)
+    class Meta:
+        model = Address
+        fields = '__all__'
