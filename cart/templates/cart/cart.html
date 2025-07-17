@@ -22,7 +22,7 @@
                     <tbody class="align-middle">
                     {% for item in cart %}
                         <tr>
-                            <td class="align-middle"><img src="{{ item.detail.img.url }}" alt="" style="width: 50px;">
+                            <td class="align-middle"><img src="{{ item.detail.image.url }}" alt="" style="width: 50px;">
                                 Product Name
                             </td>
                             <td class="align-middle">{{ item.detail.title }}</td>
@@ -59,8 +59,8 @@
                             <h5>Total</h5>
                             <h5>$160</h5>
                         </div>
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout
-                        </button>
+                        <a href="{% url 'address' %}" class="btn btn-block btn-primary font-weight-bold my-3 py-3">>Proceed
+                            To Checkout </a>
                     </div>
                 </div>
             </div>

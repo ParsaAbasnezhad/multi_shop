@@ -54,6 +54,8 @@ class OTPCode(models.Model):
         return self.email_or_phone
 
 
+# User addresses
+
 class Address(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='address')
     full_name = models.CharField(max_length=25)
@@ -64,3 +66,4 @@ class Address(models.Model):
 
     def __str__(self):
         return self.user
+

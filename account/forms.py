@@ -18,7 +18,7 @@ class SetPasswordForm(forms.Form):
 
 
 class AddressForm(forms.ModelForm):
-    user = forms.IntegerField(required=False)
+    user = forms.IntegerField(required=False) #ID USER
     class Meta:
         model = Address
         fields = '__all__'

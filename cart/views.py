@@ -1,4 +1,5 @@
 from cart.cart_save import Cart
+from cart.models import Order
 from shop.models import Detail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -23,3 +24,5 @@ class CartAddView(View):
         cart = Cart(request)
         cart.add(detail, quantity, size, color)
         return redirect('cart:cart_detail')
+
+

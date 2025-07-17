@@ -64,10 +64,11 @@ def set_password(request):
 
 
 
-class AddressView(View):
+class AddAddressView(View):
     def post(self, request):
         form = AddressForm(request.POST)
         if form.is_valid():
+            address =form.save(commit=False)
+            address.user = request.user
             form.save()
-
         return render(request, 'account/checkout.html',{'form': form})
