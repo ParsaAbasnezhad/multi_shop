@@ -28,7 +28,7 @@
                         Nonumy</p>
                     <div class="d-flex mb-3">
                         <strong class="text-dark mr-3">Sizes:</strong>
-                        <form action="{% url 'cart:cart_detail' %}" method="post">
+                        <form action="{% url 'cart:cart_list' detail.id %}" method="post">
                             {% csrf_token %}
                             {% if detail.size.all %}
                                 {% for size in detail.size.all %}
