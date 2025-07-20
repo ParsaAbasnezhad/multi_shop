@@ -16,7 +16,7 @@ class Cart:
         for item in cart.values():
             detail_obj = Detail.objects.get(id=item['id'])
             item['detail'] = detail_obj
-            item['total'] = int(item['quantity']) * float(detail_obj.price)
+            item['total'] = int(item['quantity']) * int(detail_obj.price)
             item['unique_id'] = self.unique_id_generaton(detail_obj.id, item['color'], item['size'])
             yield item
 
@@ -40,3 +40,9 @@ class Cart:
     def save(self):
         self.session[CART_SESSION_ID] = self.cart
         self.session.modified = True
+
+
+    def total(self):
+        cart = self.cart.values()
+        total = sum(int(item['price'])  * int(item['quantity']) for item in cart)
+        return total
