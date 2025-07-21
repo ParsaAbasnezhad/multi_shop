@@ -1,5 +1,7 @@
 from django.db import models
 
+from home.models import Category
+
 
 class Size(models.Model):
     title = models.CharField(null=True, blank=True, max_length=10, verbose_name='سایز')
@@ -16,6 +18,7 @@ class Color(models.Model):
 
 
 class Detail(models.Model):
+    category = models.ManyToManyField(Category)
     title = models.CharField(max_length=100, verbose_name='نام کالا')
     description = models.TextField(verbose_name='توضیحات')
     image = models.ImageField(upload_to='detail_img/', verbose_name='عکس')
