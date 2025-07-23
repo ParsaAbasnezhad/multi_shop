@@ -10,9 +10,9 @@ class HomePageView(TemplateView):
 
 
 class CategoryListView(TemplateView):
-    template_name = 'include/navbar.html'
+    template_name = 'base.html'
 
     def get_context_data(self, **kwargs):
-        context =super(CategoryListView,self).get_context_data()
-        context['category'] = Category.objects.all()
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
         return context

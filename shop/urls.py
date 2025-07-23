@@ -1,10 +1,9 @@
 from django.urls import path
 from .import views
-from .views import Detail
-
-
+from .views import ShopDetailView
 
 app_name = 'shop'
 urlpatterns = [
-    path('<int:pk>',views.DetailList.as_view(), name='detail'),
+    path('shop/', ShopDetailView.as_view(), name='shop'),
 ]
+
