@@ -35,3 +35,9 @@ class ProductListView(ListView):
             queryset = queryset.filter(price__lte=max_price, price__gte=min_price)
         context = super(ProductListView, self).get_context_data()
         context['objects_list'] = queryset
+
+
+
+def new_product_view(request):
+    new_product = Detail.objects.order_by('created_at')[:10]
+    return render(request, 'home/index.html', {'product': new_product})

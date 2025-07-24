@@ -26,6 +26,7 @@ class Detail(models.Model):
     status = models.BooleanField(default=False, verbose_name='وضعیت')
     size = models.ManyToManyField(Size, blank=True, related_name='size', verbose_name='سایز')
     color = models.ManyToManyField(Color, blank=True, related_name='color', verbose_name='رنگ')
+    created_at = models.DateTimeField(auto_now_add=True,null=True,blank=True, verbose_name='زمان')
 
     def __str__(self):
         return self.title
